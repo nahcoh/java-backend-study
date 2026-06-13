@@ -1,4 +1,8 @@
+package property;
+
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PropertyService {
 
@@ -44,5 +48,41 @@ public class PropertyService {
     public Map<String, Property> findAllProperties() {
         return propertyRepository.findAll();
     }
+
+    public List<Property> findByOwnerEmail(String ownerEmail) {
+        List<Property> result = new ArrayList<>();
+
+        for (Property property : propertyRepository.findAll().values()) {
+            if (property.getOwnerEmail().equals(ownerEmail)) {
+                result.add(property);
+            }
+        }
+        return result;
+    }
+
+    public List<Property> findByPriceRange(int minPrice, int maxPrice) {
+        List<Property> result = new ArrayList<>();
+
+        for (Property property : propertyRepository.findAll().values()) {
+            if (property.getPrice() >= minPrice && property.getPrice() <= maxPrice) {
+                result.add(property);
+            }
+        }
+
+        return result;
+    }
+
+    public List<Property> findByDescriptionKeyword(String keyword) {
+        List<Property> result = new ArrayList<>();
+
+        for (Property property : propertyRepository.findAll().values()) {
+            if (property.getDescription().contains(keyword)) {
+                result.add(property);
+            }
+        }
+        return result;
+    }
+
+
 
 }

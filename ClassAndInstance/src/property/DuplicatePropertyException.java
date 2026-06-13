@@ -1,3 +1,5 @@
+package property;
+
 public class DuplicatePropertyException extends RuntimeException {
 
     public DuplicatePropertyException(String message) {
