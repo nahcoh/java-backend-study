@@ -6,7 +6,11 @@ import java.util.List;
 
 public class PropertyService {
 
-    private final PropertyRepository propertyRepository = new PropertyRepository();
+    private final PropertyRepository propertyRepository;
+
+    public PropertyService(PropertyRepository propertyRepository) {
+        this.propertyRepository = propertyRepository;
+    }
 
 
     public void register(Property property) {

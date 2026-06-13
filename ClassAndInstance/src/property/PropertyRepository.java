@@ -3,32 +3,17 @@ package property;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PropertyRepository {
+public interface PropertyRepository {
 
-    private final Map<String, Property> properties = new HashMap<>();
+    void save(Property property);
 
-    public void save(Property property) {
-        properties.put(property.getAddress(), property);
-    }
+    Property findByAddress(String address);
 
-    public Property findByAddress(String address) {
-        return properties.get(address);
+    boolean existsByAddress(String address);
 
-    }
+    void deleteByAddress(String address);
 
-    public boolean existsByAddress(String address) {
-        return properties.containsKey(address);
-    }
+    Map<String, Property> findAll();
 
-    public void deleteByAddress(String address) {
-        properties.remove(address);
-    }
-
-    public Map<String, Property> findAll() {
-        return properties;
-    }
-
-    public int count() {
-        return properties.size();
-    }
+    int count();
 }

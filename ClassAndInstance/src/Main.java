@@ -1,3 +1,4 @@
+import config.AppConfig;
 import notification.EmailSender;
 import notification.NotificationSender;
 import notification.SmsSender;
@@ -15,12 +16,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-        PropertyService propertyService = new PropertyService();
 
-        UserRepository userRepository = new UserRepository();
-        UserService emailUserService = new UserService(userRepository, new EmailSender());
+        AppConfig appConfig = new AppConfig();
+        UserService emailUserService = appConfig.emailUserService();
+        UserService smsUserService = appConfig.smsUserService();
 
-        UserService smsUserService = new UserService(userRepository, new SmsSender());
+        PropertyService propertyService = appConfig.propertyService();
 
         User user1 = new User("kim@test.com", "호찬", 31);
         Property property1 = new Property("서울시 강남구", 50000, " 역세권 원룸", "kim@test.com");
@@ -91,5 +92,11 @@ public class Main {
 
         User smsUser = new User("sms@test.com", "문자 유저", 32);
         smsUserService.register(smsUser);
+
+        System.out.println(appConfig.emailUserService() == appConfig.emailUserService());
+        System.out.println(appConfig.smsUserService() == appConfig.smsUserService());
+
+        System.out.println(appConfig.propertyService() == appConfig.propertyService());
+
     }
 }
