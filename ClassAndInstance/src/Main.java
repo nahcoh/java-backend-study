@@ -14,16 +14,21 @@ import user.UserService;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
 
+
     public static void main(String[] args) {
-
-
         AppConfig appConfig = new AppConfig();
+
+        PropertyService propertyService = appConfig.propertyService();
         UserService emailUserService = appConfig.emailUserService();
         UserService smsUserService = appConfig.smsUserService();
 
-        PropertyService propertyService = appConfig.propertyService();
+        testProperty(propertyService);
+        testNotification();
+        testUser(emailUserService, smsUserService);
+        testSingleton(appConfig);
+    }
 
-        User user1 = new User("kim@test.com", "호찬", 31);
+    private static void testProperty(PropertyService propertyService) {
         Property property1 = new Property("서울시 강남구", 50000, " 역세권 원룸", "kim@test.com");
         Property property2 = new Property("서울시 마포구", 70000, "투룸", "kim@test.com");
         Property property3 = new Property("서울시 서초구", 90000, "신축 오피스텔", "lee@test.com");
@@ -61,9 +66,6 @@ public class Main {
         Property foundProperty1 = propertyService.findByAddress("서울시 강남구");
         System.out.println("등록자 이메일 = " + foundProperty1.getOwnerEmail());
 
-//        propertyService.deleteByAddress("서울시 강남구");
-//        System.out.println(
-//            "삭제 후 전체 매물 수 = " + propertyService.countProperties());
 
         System.out.println("kim@test.com 등록 매물");
         for (Property property : propertyService.findByOwnerEmail("kim@test.com")) {
@@ -81,11 +83,20 @@ public class Main {
             System.out.println(property.getAddress() + " / " + property.getDescription());
         }
 
+        propertyService.deleteByAddress("서울시 강남구");
+        System.out.println(
+            "삭제 후 전체 매물 수 = " + propertyService.countProperties());
+    }
+
+    private static void testNotification() {
         NotificationSender sender = new EmailSender();
         sender.send("회원가입을 환영함");
 
         sender = new SmsSender();
         sender.send("회원가입을 환영합니다.");
+    }
+
+    private static void testUser(UserService emailUserService, UserService smsUserService) {
 
         User emailUser = new User("email@test.com", "이메일 유저", 20);
         emailUserService.register(emailUser);
@@ -93,10 +104,11 @@ public class Main {
         User smsUser = new User("sms@test.com", "문자 유저", 32);
         smsUserService.register(smsUser);
 
+    }
+
+    private static void testSingleton(AppConfig appConfig){
         System.out.println(appConfig.emailUserService() == appConfig.emailUserService());
         System.out.println(appConfig.smsUserService() == appConfig.smsUserService());
-
         System.out.println(appConfig.propertyService() == appConfig.propertyService());
-
     }
 }
