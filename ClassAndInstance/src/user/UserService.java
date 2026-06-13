@@ -1,10 +1,20 @@
 package user;
 
 import java.util.Map;
+import notification.EmailSender;
+import notification.NotificationSender;
 
 public class UserService {
 
-    private final UserRepository userRepository = new UserRepository();
+    private final UserRepository userRepository;
+    private final NotificationSender notificationSender;
+
+    public UserService(UserRepository userRepository, NotificationSender notificationSender) {
+        this.userRepository = userRepository;
+        this.notificationSender = notificationSender;
+    }
+
+
 
     public void register(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
@@ -12,6 +22,8 @@ public class UserService {
         }
 
         userRepository.save(user);
+        notificationSender.send(user.getName() + "님 회원가입을 환영합니다.");
+
     }
 
     public User findByEmail(String email) {
@@ -48,5 +60,6 @@ public class UserService {
     public int countUsers() {
         return userRepository.count();
     }
+
 
 }

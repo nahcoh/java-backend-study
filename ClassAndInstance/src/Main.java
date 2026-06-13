@@ -1,4 +1,13 @@
-package property;
+import notification.EmailSender;
+import notification.NotificationSender;
+import notification.SmsSender;
+import property.DuplicatePropertyException;
+import property.Property;
+import property.PropertyNotFoundException;
+import property.PropertyService;
+import user.User;
+import user.UserRepository;
+import user.UserService;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -8,6 +17,12 @@ public class Main {
 
         PropertyService propertyService = new PropertyService();
 
+        UserRepository userRepository = new UserRepository();
+        UserService emailUserService = new UserService(userRepository, new EmailSender());
+
+        UserService smsUserService = new UserService(userRepository, new SmsSender());
+
+        User user1 = new User("kim@test.com", "호찬", 31);
         Property property1 = new Property("서울시 강남구", 50000, " 역세권 원룸", "kim@test.com");
         Property property2 = new Property("서울시 마포구", 70000, "투룸", "kim@test.com");
         Property property3 = new Property("서울시 서초구", 90000, "신축 오피스텔", "lee@test.com");
@@ -64,5 +79,17 @@ public class Main {
         for (Property property : propertyService.findByDescriptionKeyword("원룸")) {
             System.out.println(property.getAddress() + " / " + property.getDescription());
         }
+
+        NotificationSender sender = new EmailSender();
+        sender.send("회원가입을 환영함");
+
+        sender = new SmsSender();
+        sender.send("회원가입을 환영합니다.");
+
+        User emailUser = new User("email@test.com", "이메일 유저", 20);
+        emailUserService.register(emailUser);
+
+        User smsUser = new User("sms@test.com", "문자 유저", 32);
+        smsUserService.register(smsUser);
     }
 }
