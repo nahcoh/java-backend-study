@@ -25,6 +25,7 @@ public class AppConfig {
 
     public UserService emailUserService() {
         return emailUserService;
+
     }
 
     public UserService smsUserService() {
