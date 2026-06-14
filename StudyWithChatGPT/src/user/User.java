@@ -55,4 +55,22 @@ public class User {
     private boolean validationName(String name) {
         return name != null && !name.isBlank();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof User user)) {
+            return false;
+        }
+
+        return email.equals(user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return email.hashCode();
+    }
+
 }

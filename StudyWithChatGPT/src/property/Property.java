@@ -52,4 +52,21 @@ public class Property {
         this.description = newDescription;
 
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Property property)) {
+            return false;
+        }
+        return address.equals(property.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return address.hashCode();
+    }
+
 }
