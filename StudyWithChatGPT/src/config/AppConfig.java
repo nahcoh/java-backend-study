@@ -3,6 +3,9 @@ package config;
 import book.BookRepository;
 import book.BookService;
 import book.MemoryBookRepository;
+import customer.CustomerRepository;
+import customer.CustomerService;
+import customer.MemoryCustomerRepository;
 import notification.EmailSender;
 import notification.SmsSender;
 import property.MemoryPropertyRepository;
@@ -27,6 +30,10 @@ public class AppConfig {
     private final BookRepository bookRepository = new MemoryBookRepository();
     private final BookService bookService = new BookService(bookRepository);
 
+    private final CustomerRepository customerRepository = new MemoryCustomerRepository();
+    private final CustomerService customerService = new CustomerService(customerRepository);
+
+
 
 
     public UserService emailUserService() {
@@ -44,6 +51,10 @@ public class AppConfig {
 
     public BookService bookService() {
         return bookService;
+    }
+
+    public CustomerService customerService() {
+        return customerService;
     }
 
 }

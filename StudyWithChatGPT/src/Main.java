@@ -1,8 +1,11 @@
 import book.Book;
-import book.BookRepository;
+import book.BookNotFoundException;
 import book.BookService;
-import book.MemoryBookRepository;
+import book.DuplicateBookException;
 import config.AppConfig;
+import customer.CustomerNotFoundException;
+import customer.CustomerService;
+import customer.DuplicateCustomerException;
 import notification.EmailSender;
 import notification.NotificationSender;
 import notification.SmsSender;
@@ -11,7 +14,6 @@ import property.Property;
 import property.PropertyNotFoundException;
 import property.PropertyService;
 import user.User;
-import user.UserRepository;
 import user.UserService;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -26,6 +28,8 @@ public class Main {
         UserService emailUserService = appConfig.emailUserService();
         UserService smsUserService = appConfig.smsUserService();
         BookService bookService = appConfig.bookService();
+        CustomerService customerService = appConfig.customerService();
+
 
 
 
@@ -35,6 +39,9 @@ public class Main {
         testSingleton(appConfig);
 
         testBook(bookService);
+
+        testCustomer(customerService);
+
     }
 
     private static void testProperty(PropertyService propertyService) {
@@ -133,18 +140,17 @@ public class Main {
         bookService.changePrice("1234", 500000);
         System.out.println(bookService.findAll());
         System.out.println("count: " + bookService.count());
-        bookService.deleteByIsbn("23445");
         System.out.println(bookService.findAll());
 
         try {
             bookService.register(new Book("1234", "중복", 3000));
-        } catch (IllegalArgumentException e) {
+        } catch (DuplicateBookException e) {
             System.out.println("중복 책 예외 발생: " + e.getMessage());
         }
 
         try {
             bookService.findByIsbn("없는isbn");
-        }catch (IllegalArgumentException e){
+        }catch (BookNotFoundException e){
             System.out.println("책 없음 예외 발생: " + e.getMessage());
         }
 
@@ -155,5 +161,47 @@ public class Main {
             System.out.println("삭제 후 조회 예외 발생: " + e.getMessage());
 
         }
+    }
+
+
+    private static void testCustomer(CustomerService customerService) {
+
+        customerService.register("kim@test.com", "김철수", "010-1111-2222");
+        customerService.register("lee@test.com", "이영희", "010-3333-3333");
+
+        System.out.println(customerService.findByEmail("kim@test.com"));
+
+        customerService.changeName("kim@test.com", "바꾼이름김");
+        customerService.changePhone("kim@test.com", "010-9999-9999");
+
+        System.out.println(customerService.findByEmail("kim@test.com"));
+
+        customerService.count();
+        System.out.println("customerService.count() = " + customerService.count());
+
+        customerService.findAll();
+
+
+        try {
+            customerService.register("kim@test.com", "중복고객", "010-3333-3333");
+        } catch (DuplicateCustomerException e) {
+            System.out.println("중복 고객 예외 발생");
+        }
+
+        try {
+            customerService.findByEmail("none@test.com");
+        } catch (CustomerNotFoundException e) {
+            System.out.println("고객 없음 예외 발생");
+        }
+
+        customerService.deleteByEmail("lee@test.com");
+        System.out.println(customerService.findAll());
+
+        try {
+            customerService.findByEmail("lee@test.com");
+        } catch (CustomerNotFoundException e) {
+            System.out.println("삭제 후 조회 예외 발생");
+        }
+
     }
 }
