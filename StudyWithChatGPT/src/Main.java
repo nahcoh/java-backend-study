@@ -1,3 +1,7 @@
+import book.Book;
+import book.BookRepository;
+import book.BookService;
+import book.MemoryBookRepository;
 import config.AppConfig;
 import notification.EmailSender;
 import notification.NotificationSender;
@@ -21,11 +25,16 @@ public class Main {
         PropertyService propertyService = appConfig.propertyService();
         UserService emailUserService = appConfig.emailUserService();
         UserService smsUserService = appConfig.smsUserService();
+        BookService bookService = appConfig.bookService();
+
+
 
         testProperty(propertyService);
         testNotification();
         testUser(emailUserService, smsUserService);
         testSingleton(appConfig);
+
+        testBook(bookService);
     }
 
     private static void testProperty(PropertyService propertyService) {
@@ -110,5 +119,41 @@ public class Main {
         System.out.println(appConfig.emailUserService() == appConfig.emailUserService());
         System.out.println(appConfig.smsUserService() == appConfig.smsUserService());
         System.out.println(appConfig.propertyService() == appConfig.propertyService());
+    }
+
+    private static void testBook(BookService bookService) {
+
+        bookService.register(new Book("1234", "데미안", 28000));
+        bookService.register(new Book("23445", "민법", 35000));
+
+        bookService.findByIsbn("1234");
+        System.out.println(bookService.findByIsbn("1234").toString());
+        bookService.findByIsbn("23445");
+
+        bookService.changePrice("1234", 500000);
+        System.out.println(bookService.findAll());
+        System.out.println("count: " + bookService.count());
+        bookService.deleteByIsbn("23445");
+        System.out.println(bookService.findAll());
+
+        try {
+            bookService.register(new Book("1234", "중복", 3000));
+        } catch (IllegalArgumentException e) {
+            System.out.println("중복 책 예외 발생: " + e.getMessage());
+        }
+
+        try {
+            bookService.findByIsbn("없는isbn");
+        }catch (IllegalArgumentException e){
+            System.out.println("책 없음 예외 발생: " + e.getMessage());
+        }
+
+
+        try {
+            bookService.findByIsbn("23445");
+        }catch (IllegalArgumentException e){
+            System.out.println("삭제 후 조회 예외 발생: " + e.getMessage());
+
+        }
     }
 }

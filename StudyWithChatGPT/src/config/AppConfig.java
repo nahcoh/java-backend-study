@@ -1,5 +1,8 @@
 package config;
 
+import book.BookRepository;
+import book.BookService;
+import book.MemoryBookRepository;
 import notification.EmailSender;
 import notification.SmsSender;
 import property.MemoryPropertyRepository;
@@ -19,8 +22,11 @@ public class AppConfig {
     private final UserService smsUserService = new UserService(userRepository, new SmsSender());
 
     private final PropertyRepository propertyRepository = new MemoryPropertyRepository();
-
     private final PropertyService propertyService = new PropertyService(propertyRepository);
+
+    private final BookRepository bookRepository = new MemoryBookRepository();
+    private final BookService bookService = new BookService(bookRepository);
+
 
 
     public UserService emailUserService() {
@@ -35,4 +41,9 @@ public class AppConfig {
     public PropertyService propertyService() {
         return propertyService;
     }
+
+    public BookService bookService() {
+        return bookService;
+    }
+
 }
