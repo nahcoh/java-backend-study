@@ -3,6 +3,7 @@ import book.BookNotFoundException;
 import book.BookService;
 import book.DuplicateBookException;
 import config.AppConfig;
+import customer.Customer;
 import customer.CustomerNotFoundException;
 import customer.CustomerService;
 import customer.DuplicateCustomerException;
@@ -126,6 +127,10 @@ public class Main {
         System.out.println(appConfig.emailUserService() == appConfig.emailUserService());
         System.out.println(appConfig.smsUserService() == appConfig.smsUserService());
         System.out.println(appConfig.propertyService() == appConfig.propertyService());
+
+        System.out.println(appConfig.bookService() == appConfig.bookService());
+        System.out.println(appConfig.customerService() == appConfig.customerService());
+
     }
 
     private static void testBook(BookService bookService) {
@@ -153,11 +158,12 @@ public class Main {
         }catch (BookNotFoundException e){
             System.out.println("책 없음 예외 발생: " + e.getMessage());
         }
-
+        bookService.deleteByIsbn("23445");
 
         try {
+
             bookService.findByIsbn("23445");
-        }catch (IllegalArgumentException e){
+        }catch (BookNotFoundException e){
             System.out.println("삭제 후 조회 예외 발생: " + e.getMessage());
 
         }
@@ -176,10 +182,11 @@ public class Main {
 
         System.out.println(customerService.findByEmail("kim@test.com"));
 
-        customerService.count();
         System.out.println("customerService.count() = " + customerService.count());
 
-        customerService.findAll();
+        for (Customer customer : customerService.findAll()) {
+            System.out.println(customer);
+        }
 
 
         try {
