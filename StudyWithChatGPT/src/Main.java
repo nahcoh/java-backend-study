@@ -10,6 +10,11 @@ import customer.DuplicateCustomerException;
 import notification.EmailSender;
 import notification.NotificationSender;
 import notification.SmsSender;
+import order.DuplicateOrderException;
+import order.Order;
+import order.OrderNotFoundException;
+import order.OrderService;
+import order.OrderStatus;
 import property.DuplicatePropertyException;
 import property.Property;
 import property.PropertyNotFoundException;
@@ -30,7 +35,7 @@ public class Main {
         UserService smsUserService = appConfig.smsUserService();
         BookService bookService = appConfig.bookService();
         CustomerService customerService = appConfig.customerService();
-
+        OrderService orderService = appConfig.orderService();
 
 
 
@@ -42,6 +47,8 @@ public class Main {
         testBook(bookService);
 
         testCustomer(customerService);
+
+        testOrder(orderService);
 
     }
 
@@ -131,6 +138,7 @@ public class Main {
         System.out.println(appConfig.bookService() == appConfig.bookService());
         System.out.println(appConfig.customerService() == appConfig.customerService());
 
+        System.out.println(appConfig.orderService() == appConfig.orderService());
     }
 
     private static void testBook(BookService bookService) {
@@ -207,6 +215,47 @@ public class Main {
         try {
             customerService.findByEmail("lee@test.com");
         } catch (CustomerNotFoundException e) {
+            System.out.println("삭제 후 조회 예외 발생");
+        }
+
+    }
+
+    private static void testOrder(OrderService orderService) {
+
+        orderService.register(new Order("order-1", "kim@test.com", "맥북", 20000000));
+        orderService.register(new Order("order-2", "lee@test.com", "아이패드", 10000000));
+
+        System.out.println(
+            "orderService.findByOrderId(\"order-1\") = " + orderService.findByOrderId("order-1"));
+
+        orderService.changeStatus("order-1", OrderStatus.COMPLETED);
+
+        System.out.println(
+            "orderService.findByOrderId(\"order-1\") = " + orderService.findByOrderId("order-1"));
+
+        System.out.println(orderService.findAll());
+        System.out.println("orderService.count() = " + orderService.count());
+
+        try {
+            orderService.register(new Order("order-1", "park@test.com", "중복상품", 50000));
+        } catch (DuplicateOrderException e) {
+            System.out.println("중복 주문 예외 발생");
+        }
+
+        try {
+            orderService.findByOrderId("없는 주문");
+        } catch (OrderNotFoundException e) {
+            System.out.println("주문 없음 예외 발생");
+        }
+        System.out.println(orderService.findByCustomerEmail("kim@test.com"));
+        System.out.println(orderService.findByPriceRange(1, 900000000));
+
+        orderService.deleteByOrderId("order-2");
+        System.out.println(orderService.findAll());
+
+        try {
+            orderService.findByOrderId("order-2");
+        } catch (OrderNotFoundException e) {
             System.out.println("삭제 후 조회 예외 발생");
         }
 

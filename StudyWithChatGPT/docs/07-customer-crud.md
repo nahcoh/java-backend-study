@@ -18,7 +18,7 @@
 ## TIL
 
 ### Entity, Repository, Service의 역할 분리
-Customer CRUD를 구현하면서 중요한 점은 각 클래스의 책음을 나누는 것이다.
+Customer CRUD를 구현하면서 중요한 점은 각 클래스의 책임을 나누는 것이다.
 
 #### 1. Customer
 `Customer`는 고객 한 명의 데이터를 표현하는 도메인 객체다.
@@ -30,8 +30,8 @@ Customer가 책임지는 것:
 - 자신의 전화번호 변경
 - 자신의 필드 검증
 
-Cusotmer는 자기 자신의 값만 관리한다. 
-Customer가 하면 안되는 것:
+Customer는 자기 자신의 값만 관리한다. 
+Customer가 하면 안 되는 것:
 - 전체 고객 목록 조회
 - email로 고객 찾기
 - Repository 접근
@@ -66,7 +66,7 @@ Service가 email을 받음
 1. Repository에서 Customer를 찾음
 2. 없으면 Service가 예외 발생
 3. 있으면 Customer.changeName() 호출
-4. Custoemr가 자기 이름을 검증하고 변경
+4. Customer 자기 이름을 검증하고 변경
 
 #### 4. 생성자 주입은 Customer가 아니라 Service에 적용한다.
 Repository를 필드로 가지는 것은 Customer가 아니라 Service다. 
@@ -94,12 +94,12 @@ b@test.com      customer2
 List<Customer> list = map.values(); //불가능
 타입이 다르기 때문이다.
 
-map.values() 반환타입 => Collection<Customer>
+map.values() 반환 타입 => Collection<Customer>
 받으려는 타입 List<Customer>
 
 ### 6. 왜 `new ArrayList<>(map.values())`를 사용하는가?
 `ArrayList`는 `Map`을 구현한 것이 아니다.
-`ArrayList`는 `List`의 구현체이고, `List`는 `Collection`의 하위타입이다.
+`ArrayList`는 `List`의 구현체이고, `List`는 `Collection`의 하위 타입이다.
 
 구조:
 

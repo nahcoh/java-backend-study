@@ -8,6 +8,10 @@ import customer.CustomerService;
 import customer.MemoryCustomerRepository;
 import notification.EmailSender;
 import notification.SmsSender;
+import order.MemoryOrderRepository;
+import order.Order;
+import order.OrderRepository;
+import order.OrderService;
 import property.MemoryPropertyRepository;
 import property.Property;
 import property.PropertyRepository;
@@ -33,7 +37,8 @@ public class AppConfig {
     private final CustomerRepository customerRepository = new MemoryCustomerRepository();
     private final CustomerService customerService = new CustomerService(customerRepository);
 
-
+    private final OrderRepository orderRepository = new MemoryOrderRepository();
+    private final OrderService orderService = new OrderService(orderRepository);
 
 
     public UserService emailUserService() {
@@ -55,6 +60,10 @@ public class AppConfig {
 
     public CustomerService customerService() {
         return customerService;
+    }
+
+    public OrderService orderService() {
+        return orderService;
     }
 
 }
